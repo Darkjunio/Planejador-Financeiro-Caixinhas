@@ -3,155 +3,97 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Planejador Financeiro – Caixinhas</title>
+  <title>Planejador Financeiro – Login</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f5f7fa;
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-    h1, h2 {
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
     .card {
-      background: #fff;
-      padding: 16px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    label {
-      font-weight: bold;
-    }
-    input {
-      padding: 8px;
-      margin: 6px 0 12px 0;
+      background: white;
+      padding: 24px;
+      border-radius: 10px;
       width: 100%;
-      box-sizing: border-box;
+      max-width: 400px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 { text-align: center; }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
     }
     button {
-      padding: 10px;
       width: 100%;
+      padding: 10px;
+      margin-top: 8px;
       background: #4f46e5;
       color: white;
       border: none;
       border-radius: 6px;
-      font-size: 16px;
       cursor: pointer;
     }
-    button:hover {
-      background: #4338ca;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-    }
-    th {
-      background: #eef2ff;
-    }
-    .total {
-      font-size: 18px;
-      font-weight: bold;
-      text-align: center;
-      margin-top: 20px;
-    }
+    button:hover { background: #4338ca; }
+    p { text-align: center; margin-top: 10px; }
   </style>
 </head>
 <body>
 
-  <h1>📦 Planejador Financeiro – Caixinhas</h1>
+<div class="card">
+  <h2>🔐 Acesso ao Planejador</h2>
 
-  <div class="card">
-    <h2>Adicionar valor guardado</h2>
-    <label>Valor guardado no mês (R$)</label>
-    <input type="number" id="valor" placeholder="Ex: 400" />
-    <button onclick="adicionarValor()">Adicionar</button>
-    <p id="distribuicao" style="margin-top:10px;font-weight:bold;color:#374151"></p>
-  </div>
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="senha" placeholder="Senha" />
 
-  <div class="card">
-    <h2>Caixinhas</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Caixinha</th>
-          <th>Porcentagem</th>
-          <th>Valor acumulado (R$)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>🏠 Casa</td>
-          <td>40%</td>
-          <td id="casa">0.00</td>
-        </tr>
-        <tr>
-          <td>🛡️ Segurança</td>
-          <td>35%</td>
-          <td id="seguranca">0.00</td>
-        </tr>
-        <tr>
-          <td>💍 Casamento</td>
-          <td>15%</td>
-          <td id="casamento">0.00</td>
-        </tr>
-        <tr>
-          <td>✈️ Viagem / Lua de Mel</td>
-          <td>10%</td>
-          <td id="viagem">0.00</td>
-        </tr>
-      </tbody>
-    </table>
+  <button onclick="cadastrar()">Criar conta</button>
+  <button onclick="login()">Entrar</button>
 
-    <div class="total">
-      Total guardado: R$ <span id="total">0.00</span>
-    </div>
-  </div>
+  <p id="msg"></p>
+</div>
 
-  <script>
-    let casa = 0;
-    let seguranca = 0;
-    let casamento = 0;
-    let viagem = 0;
+<script>
+  // 🔥 CONFIGURAÇÃO DO FIREBASE (VOCÊ VAI SUBSTITUIR)
+  const firebaseConfig = {
+    apiKey: "SUA_API_KEY",
+    authDomain: "SEU_AUTH_DOMAIN",
+    projectId: "SEU_PROJECT_ID",
+  };
 
-    function adicionarValor() {
-      const valor = parseFloat(document.getElementById('valor').value);
-      if (isNaN(valor) || valor <= 0) return alert('Digite um valor válido');
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
 
-      const vCasa = valor * 0.4;
-      const vSeg = valor * 0.35;
-      const vCas = valor * 0.15;
-      const vVia = valor * 0.10;
+  function cadastrar() {
+    const email = document.getElementById('email').value;
+    const senha = document.getElementById('senha').value;
 
-      casa += vCasa;
-      seguranca += vSeg;
-      casamento += vCas;
-      viagem += vVia;
+    auth.createUserWithEmailAndPassword(email, senha)
+      .then(() => {
+        document.getElementById('msg').innerText = 'Conta criada com sucesso!';
+      })
+      .catch(err => {
+        document.getElementById('msg').innerText = err.message;
+      });
+  }
 
-      document.getElementById('casa').innerText = casa.toFixed(2);
-      document.getElementById('seguranca').innerText = seguranca.toFixed(2);
-      document.getElementById('casamento').innerText = casamento.toFixed(2);
-      document.getElementById('viagem').innerText = viagem.toFixed(2);
+  function login() {
+    const email = document.getElementById('email').value;
+    const senha = document.getElementById('senha').value;
 
-      const total = casa + seguranca + casamento + viagem;
-      document.getElementById('total').innerText = total.toFixed(2);
-
-      document.getElementById('distribuicao').innerText =
-        `Distribuição deste depósito → Casa: R$ ${vCasa.toFixed(2)} | ` +
-        `Segurança: R$ ${vSeg.toFixed(2)} | ` +
-        `Casamento: R$ ${vCas.toFixed(2)} | ` +
-        `Viagem: R$ ${vVia.toFixed(2)}`;
-
-      document.getElementById('valor').value = '';
-    }
-  </script>
+    auth.signInWithEmailAndPassword(email, senha)
+      .then(() => {
+        window.location.href = 'dashboard.html';
+      })
+      .catch(err => {
+        document.getElementById('msg').innerText = err.message;
+      });
+  }
+</script>
 
 </body>
 </html>
