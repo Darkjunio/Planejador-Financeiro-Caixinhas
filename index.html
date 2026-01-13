@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planejador Financeiro – Caixinhas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .card {
+      background: #fff;
+      padding: 16px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+    }
+    input {
+      padding: 8px;
+      margin: 6px 0 12px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px;
+      width: 100%;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #4338ca;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background: #eef2ff;
+    }
+    .total {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📦 Planejador Financeiro – Caixinhas</h1>
+
+  <div class="card">
+    <h2>Adicionar valor guardado</h2>
+    <label>Valor guardado no mês (R$)</label>
+    <input type="number" id="valor" placeholder="Ex: 400" />
+    <button onclick="adicionarValor()">Adicionar</button>
+    <p id="distribuicao" style="margin-top:10px;font-weight:bold;color:#374151"></p>
+  </div>
+
+  <div class="card">
+    <h2>Caixinhas</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Caixinha</th>
+          <th>Porcentagem</th>
+          <th>Valor acumulado (R$)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🏠 Casa</td>
+          <td>40%</td>
+          <td id="casa">0.00</td>
+        </tr>
+        <tr>
+          <td>🛡️ Segurança</td>
+          <td>35%</td>
+          <td id="seguranca">0.00</td>
+        </tr>
+        <tr>
+          <td>💍 Casamento</td>
+          <td>15%</td>
+          <td id="casamento">0.00</td>
+        </tr>
+        <tr>
+          <td>✈️ Viagem / Lua de Mel</td>
+          <td>10%</td>
+          <td id="viagem">0.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="total">
+      Total guardado: R$ <span id="total">0.00</span>
+    </div>
+  </div>
+
+  <script>
+    let casa = 0;
+    let seguranca = 0;
+    let casamento = 0;
+    let viagem = 0;
+
+    function adicionarValor() {
+      const valor = parseFloat(document.getElementById('valor').value);
+      if (isNaN(valor) || valor <= 0) return alert('Digite um valor válido');
+
+      const vCasa = valor * 0.4;
+      const vSeg = valor * 0.35;
+      const vCas = valor * 0.15;
+      const vVia = valor * 0.10;
+
+      casa += vCasa;
+      seguranca += vSeg;
+      casamento += vCas;
+      viagem += vVia;
+
+      document.getElementById('casa').innerText = casa.toFixed(2);
+      document.getElementById('seguranca').innerText = seguranca.toFixed(2);
+      document.getElementById('casamento').innerText = casamento.toFixed(2);
+      document.getElementById('viagem').innerText = viagem.toFixed(2);
+
+      const total = casa + seguranca + casamento + viagem;
+      document.getElementById('total').innerText = total.toFixed(2);
+
+      document.getElementById('distribuicao').innerText =
+        `Distribuição deste depósito → Casa: R$ ${vCasa.toFixed(2)} | ` +
+        `Segurança: R$ ${vSeg.toFixed(2)} | ` +
+        `Casamento: R$ ${vCas.toFixed(2)} | ` +
+        `Viagem: R$ ${vVia.toFixed(2)}`;
+
+      document.getElementById('valor').value = '';
+    }
+  </script>
+
+</body>
+</html>
